@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProductosControlador {
 
     @Autowired
-    private ProductosServicio servicio;
+    private ProductosServicio productoServicio;
 
     @GetMapping("/articles")
     public ResponseEntity listarProductos(@RequestParam(required = false, defaultValue = "") String category,
@@ -24,22 +24,22 @@ public class ProductosControlador {
                                           @RequestParam(required = false, defaultValue = "") String freeShipping,
                                           @RequestParam(required = false, defaultValue = "") String prestige,
                                           @RequestParam(required = false, defaultValue = "") String orden) throws ProductException {
-        return new ResponseEntity(servicio.procesarConsulta(category, brand, price, freeShipping, prestige, orden), HttpStatus.OK);
+        return new ResponseEntity(productoServicio.procesarConsulta(category, brand, price, freeShipping, prestige, orden), HttpStatus.OK);
     }
 
     @PostMapping("/purchase-request")
     public ResponseEntity procesarCompra(@RequestBody PayloadDTO payload) throws ProductException {
-        return new ResponseEntity(servicio.generarTicket(payload), HttpStatus.OK);
+        return new ResponseEntity(productoServicio.generarTicket(payload), HttpStatus.OK);
     }
 
     @PostMapping("/carrito")
     public ResponseEntity agregar(@RequestParam(required = false, defaultValue = "") String userID, @RequestBody(required = false) PayloadDTO payload) throws ProductException, UserException {
-        return new ResponseEntity(servicio.agregarAlCarrito(userID, payload), HttpStatus.OK);
+        return new ResponseEntity(productoServicio.agregarAlCarrito(userID, payload), HttpStatus.OK);
     }
 
     @PostMapping("/carrito/comprar")
     public ResponseEntity comprar(@RequestParam(required = false, defaultValue = "") String userID) throws ProductException, UserException {
-        return new ResponseEntity(servicio.comprarCarrito(userID), HttpStatus.OK);
+        return new ResponseEntity(productoServicio.comprarCarrito(userID), HttpStatus.OK);
     }
 
     @ExceptionHandler(ProductException.class)
