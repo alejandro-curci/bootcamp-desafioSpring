@@ -4,10 +4,11 @@ import com.desafiospring.desafio.dtos.ClienteDTO;
 import com.desafiospring.desafio.dtos.ClienteDataDTO;
 import com.desafiospring.desafio.dtos.StatusDTO;
 import com.desafiospring.desafio.exceptions.ClientException;
+import com.desafiospring.desafio.repositories.ClienteRepositorio;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -16,24 +17,24 @@ import java.util.regex.Pattern;
 @Service
 public class ClientesServicioImple implements ClientesServicio {
 
-    private Map<Integer, ClienteDataDTO> repositorio;
-
-    public ClientesServicioImple() {
-        repositorio = new HashMap<>();
-    }
+    @Autowired
+    private ClienteRepositorio clienteRepositorio;
 
     // método que crea el cliente nuevo
-    private ClienteDataDTO crearCliente(ClienteDTO data, String pass) {
+    private ClienteDataDTO crearCliente(ClienteDTO data, String pass) throws ClientException {
         ClienteDataDTO nuevoCliente = new ClienteDataDTO();
+        nuevoCliente.setDni(data.getDni());
         nuevoCliente.setNombre(data.getNombre());
         nuevoCliente.setEmail(data.getEmail());
         nuevoCliente.setProvincia(data.getProvincia());
         nuevoCliente.setPassword(pass);
+        clienteRepositorio.guardarCliente(nuevoCliente);
         return nuevoCliente;
     }
 
     // método para validar las credenciales del cliente (previo a crearlo)
     private void validarCredenciales(ClienteDTO data, String pass) throws ClientException {
+        Map<Integer, ClienteDataDTO> repositorio = clienteRepositorio.cargarClientes();
         if (repositorio.containsKey(data.getDni())) {
             throw new ClientException("El cliente ya se encuentra registrado");
         } else if (data.getDni() < 0) {
@@ -73,9 +74,9 @@ public class ClientesServicioImple implements ClientesServicio {
     // método que da el alta (valida credenciales, guardo el cliente en memoria y devuelve un mensaje exitoso)
     @Override
     public StatusDTO darDeAlta(ClienteDTO data, String pass) throws ClientException {
+        Map<Integer, ClienteDataDTO> repositorio = clienteRepositorio.cargarClientes();
         validarCredenciales(data, pass);
         ClienteDataDTO cliente = crearCliente(data, pass);
-        repositorio.put(data.getDni(), cliente);
         return new StatusDTO(200, "El cliente " + data.getNombre() + " fue satisfactoriamente creado.");
     }
 
@@ -83,6 +84,7 @@ public class ClientesServicioImple implements ClientesServicio {
     @Override
     public List<ClienteDTO> listarClientes(String provincia) throws ClientException {
         List<ClienteDTO> lista = new ArrayList<>();
+        Map<Integer, ClienteDataDTO> repositorio = clienteRepositorio.cargarClientes();
         for (Map.Entry<Integer, ClienteDataDTO> entry : repositorio.entrySet()) {
             ClienteDTO cliente = new ClienteDTO();
             cliente.setDni(entry.getKey());

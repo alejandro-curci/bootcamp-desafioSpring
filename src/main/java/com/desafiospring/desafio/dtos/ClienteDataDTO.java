@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class ClienteDataDTO {
+    private int dni;
     private String nombre;
     private String email;
     private String password;
