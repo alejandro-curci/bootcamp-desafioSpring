@@ -12,15 +12,15 @@ import java.util.*;
 @Service
 public class ProductosServicioImple implements ProductosServicio {
 
-    @Autowired
     private ProductosRepositorio repositorio;
 
     private int ticketID;
     private Map<Integer, List<ProductoCompraDTO>> carrito;
 
-    public ProductosServicioImple() {
+    public ProductosServicioImple(ProductosRepositorio repositorio) {
         ticketID = 1;
         carrito = new HashMap<>();
+        this.repositorio = repositorio;
     }
 
     // método para controlar la cantidad de parámetros recibidos en el request
