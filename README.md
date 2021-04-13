@@ -35,8 +35,8 @@ EN EL SERVICIO DE PRODUCTOS SE PUEDE:
             },
             {
                 "productId": 9,
-                "name": "remera",
-                "brand": "taverniti",
+                "name": "Remera",
+                "brand": "Taverniti",
                 "quantity": 2
             }
         ]
@@ -44,15 +44,17 @@ EN EL SERVICIO DE PRODUCTOS SE PUEDE:
     
 4- Agregar artículos al carrito de compras a (POST: api/v1/carrito)
 
-  a- Requiere un número de id como parámetro, identificando el usuario y su carrito.
+  a- Requiere un número de id como parámetro ("userID"), identificando el usuario y su carrito.
   
   b- En caso de ser la primera operación del usuario, su id será creada con el parámetro provisto
   
   c- Requiere además un objeto de tipo JSON en el body, de igual formato que en el punto 3
   
-5- Comprar todo los artículos agregados al carrito con (POST: api/v1/carrito/comprar)
+  d- Si desea consultarse los artículos agregados al carrito, puede enviarse la misma request con el body vacío
+  
+5- Comprar todos los artículos agregados al carrito con (POST: api/v1/carrito/comprar)
 
-  a- Requiere el número de id como parámetro, creado en el punto 4
+  a- Requiere el parámetro "userID", creado en el punto 4
   
 En este servicio no se persisten los datos, toda la información se trabaja en memoria
 
