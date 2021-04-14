@@ -1,11 +1,36 @@
 package com.desafiospring.desafio.fixtures;
 
 import com.desafiospring.desafio.dtos.ProductoDTO;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.util.ResourceUtils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProductoDTOFixture {
+
+    // method to load json files from /resources
+    public static List<ProductoDTO> loadJson(String path) {
+        File file = null;
+        try {
+            file = ResourceUtils.getFile(path);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        TypeReference<List<ProductoDTO>> typeReference = new TypeReference<List<ProductoDTO>>() {
+        };
+        List<ProductoDTO> productos = null;
+        try {
+            productos = objectMapper.readValue(file, typeReference);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return productos;
+    }
 
     public static List<ProductoDTO> defaultOrderedList(int order) {
         List<ProductoDTO> productos = new ArrayList<>();
